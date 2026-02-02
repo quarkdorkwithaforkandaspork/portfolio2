@@ -1,0 +1,88 @@
+@font-face {
+    font-family: 'Gulax';
+    src: url(/fonts/Gulax-Regular.woff);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+h1 {
+    font-size: 4.5rem;
+    margin-bottom: 1rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 45vw;
+    box-sizing: border-box;
+    hyphens: auto;
+}
+
+img {
+    max-width: 45vw;
+    height: auto;
+}
+
+  a:link {
+    color: rgb(0, 255, 0); /* Unvisited link color */
+  }
+
+  a:visited {
+    color: rgb(182, 0, 88); /* Visited link color */
+  }
+
+  a:hover {
+    color: rgb(0, 159, 8); /* Mouse over link color */
+  }
+
+  a:active {
+    color: yellow; /* Selected link color */
+  }
+
+#three-js-container{
+    position: fixed;
+    inset: 0;
+    z-index: -1; 
+}
+
+#content{
+    position: relative;
+    left: 50%;
+    z-index: 1; 
+    color: white;
+    font-family: 'Gulax', sans-serif;
+    padding: 2rem;
+  /* Allow internal scrolling even though body may be overflow:hidden */
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+#content h3 {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 45vw;
+    box-sizing: border-box;
+    hyphens: auto;
+}
+
+/* Panels shown/hidden by JS buttons */
+.panel {
+    display: none;
+    margin-top: 1rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 45vw;
+    box-sizing: border-box;
+    hyphens: auto;
+}
+.panel.active {
+    display: block;
+}
