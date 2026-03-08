@@ -113,10 +113,9 @@ async function loadModel(url) {
 // Carousel model URLs and container for instances
 const modelUrls = [
   '/mebruh.glb',
+  '/konstruct3d2.glb',
   '/newKPstuff.glb',
-  '/pomo_shelf.glb',
-  '/newKPstuff.glb',
-  '/pandamenu.glb',
+  '/chancellor.glb',
   '/lhdlogo.glb'
 ];
 const radius = 1; // Radius of the carousel circle
@@ -140,7 +139,7 @@ Promise.all(modelUrls.map(url => loadModel(url))).then(loadedScenes => {
     instance.traverse(node => {
       if (node.isMesh) {
         node.castShadow = true;
-        node.receiveShadow = true;
+        node.receiveShadow = false;
       }
     });
     carouselGroup.add(instance);
@@ -174,89 +173,139 @@ Promise.all(modelUrls.map(url => loadModel(url))).then(loadedScenes => {
     });
   })();
 
+  // utility for showing a particular carousel item and panel
+  function showIndex(idx) {
+    if (!objects[idx]) return;
+
+    // compute spotlight position in carousel local space
+    const worldTarget = spotlight.target.getWorldPosition(new THREE.Vector3());
+    const localTarget = worldTarget.clone();
+    carouselGroup.worldToLocal(localTarget);
+
+    // instantly move the chosen object to the spotlight (no animation)
+    objects[idx].position.copy(localTarget);
+    // snap this moved object to the ground so it doesn't float
+    (function snapMovedToGround(obj) {
+      const box = new THREE.Box3().setFromObject(obj);
+      const minY = box.min.y;
+      if (isFinite(minY)) {
+        const groundY = ground.position.y;
+        const delta = groundY - minY;
+        if (Math.abs(delta) > 1e-4) obj.position.y += delta;
+      }
+    })(objects[idx]);
+    objects[idx].visible = true;
+    // update its stored home position (grounded)
+    objects[idx].userData.home = objects[idx].position.clone();
+
+    // hide other objects and restore to home
+    objects.forEach((o, i) => {
+      if (!o) return;
+      if (i !== idx) {
+        o.visible = false;
+        if (o.userData.home) o.position.copy(o.userData.home);
+      }
+    });
+
+    // panels array mirrors the object indices
+    const panels = [
+      'panel1', 
+      'panel3',
+      'panel4',
+      'panel5',
+      'panel6'
+    ];
+    panels.forEach((pid, pi) => {
+      const el = document.getElementById(pid);
+      if (!el) return;
+      if (pi === idx) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+    });
+
+    // bring user back to top when changing panels
+    const content = document.getElementById('content');
+    content.scrollTop = 0;
+  }
+
   // setup buttons to bring objects under the spotlight
   function setupButtons() {
+    // the first carousel item (index 0) is the "home" state and is controlled by button w class 'back-btn'
     const ids = [
-      'aboutme', 
-      'gnp', 
-      'daapw',
+      'konstruct',
       'album',
-      'menu',
+      'centennial',
       'lhd'
     ];
     ids.forEach((id, idx) => {
       const btn = document.getElementById(id);
       if (!btn) return;
-      btn.addEventListener('click', () => {
-        if (!objects[idx]) return;
-        // compute spotlight position in carousel local space
-        const worldTarget = spotlight.target.getWorldPosition(new THREE.Vector3());
-        const localTarget = worldTarget.clone();
-        carouselGroup.worldToLocal(localTarget);
-
-        // instantly move the chosen object to the spotlight (no animation)
-        objects[idx].position.copy(localTarget);
-        // snap this moved object to the ground so it doesn't float
-        (function snapMovedToGround(obj) {
-          const box = new THREE.Box3().setFromObject(obj);
-          const minY = box.min.y;
-          if (isFinite(minY)) {
-            const groundY = ground.position.y;
-            const delta = groundY - minY;
-            if (Math.abs(delta) > 1e-4) obj.position.y += delta;
-          }
-        })(objects[idx]);
-        objects[idx].visible = true;
-        // update its stored home position (grounded)
-        objects[idx].userData.home = objects[idx].position.clone();
-
-        // hide other objects and restore to home
-        objects.forEach((o, i) => {
-          if (!o) return;
-          if (i !== idx) {
-            o.visible = false;
-            if (o.userData.home) o.position.copy(o.userData.home);
-          }
-        });
-
-        // Toggle HTML panels: panel1 is default visible state
-        const panels = [
-          'panel1', 
-          'panel2', 
-          'panel3',
-          'panel4',
-          'panel5',
-          'panel6'
-        ];
-        panels.forEach((pid, pi) => {
-          const el = document.getElementById(pid);
-          if (!el) return;
-          if (pi === idx) el.classList.add('active'); else el.classList.remove('active');
-        });
-      });
+      btn.addEventListener('click', () => showIndex(idx + 1));
     });
   }
 
   setupButtons();
 
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', () => showIndex(0));
+  });
+
 }).catch(err => console.error('Error loading models:', err));
 
 // No hover: disable raycasting and use a fixed camera area
-const defaultCameraPos = new THREE.Vector3(-1, 2, 12); // shifted left so scene sits away from `#content`
+const defaultCameraPos = new THREE.Vector3(-1, 2, 12); 
 const clock = new THREE.Clock();
 let isCursorLeftHalf = false;
 
+//check if mouse is in 'hoverzone' element to change value to enact zoom
 window.addEventListener('mousemove', (e) => {
-  isCursorLeftHalf = e.clientX < window.innerWidth / 2;
+  const hoverzone = document.getElementById('hoverzone');
+  if (hoverzone) {
+      const rect = hoverzone.getBoundingClientRect();
+      const insideX = e.clientX >= rect.left && e.clientX <= rect.right;
+      isCursorLeftHalf = insideX;
+    console.log(`Cursor is ${insideX ? 'inside' : 'outside'} hoverzone`); // debug log
+  } 
+  else {
+    isCursorLeftHalf = false;
+  }
 });
+
+//enable resizing on drag (code i lowk stole from stackoverflow)
+let pan1 = document.getElementById('hoverzone')
+let rpanrResize = document.getElementById('rpanrResize')
+
+let ismdwn = 0
+rpanrResize.addEventListener('mousedown', mD)
+
+function mD(event) {
+  ismdwn = 1
+  document.body.addEventListener('mousemove', mV)
+  document.body.addEventListener('mouseup', end)
+}
+
+function mV(event) {
+  if (ismdwn === 1) {
+    const maxWidth = window.innerWidth * 0.5; // 50% is the original width
+    const newWidth = Math.min(event.clientX, maxWidth);
+    pan1.style.flexBasis = newWidth + "px"
+  } else {
+    end()
+  }
+}
+const end = (e) => {
+  ismdwn = 0
+  document.body.removeEventListener('mouseup', end)
+  document.body.removeEventListener('mousemove', mV) 
+}
 
 // Render loop
 function animate() {
   requestAnimationFrame(animate);
 
-  // slow auto-rotation for diagnostics (comment out if undesired)
-  // carouselGroup.rotation.y += 0.002; // disabled to avoid group-origin rotation
-
+  // carouselGroup.rotation.y += 0.002; //deprecated
   const delta = clock.getDelta();
 
   // Animate any objects that are moving toward the spotlight
@@ -268,8 +317,8 @@ function animate() {
     // no per-object move animation; objects are positioned instantly on button click
   });
 
-  // Subtle camera focus when cursor enters left half of the screen
-  const focusOffset = new THREE.Vector3(-1.25, -1.25, -2);
+  // camera focus logic
+  const focusOffset = new THREE.Vector3(-0.75, -1.25, -2);
   const targetCamPos = isCursorLeftHalf ? defaultCameraPos.clone().add(focusOffset) : defaultCameraPos;
   camera.position.lerp(targetCamPos, 0.1);
   // camera.lookAt(spotlight.target.getWorldPosition(new THREE.Vector3()));

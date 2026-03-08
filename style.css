@@ -1,9 +1,95 @@
 @font-face {
     font-family: 'Gulax';
-    src: url(/fonts/Gulax-Regular.woff);
+    src: url(/public/fonts/Gulax-Regular.otf);
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+}
+
+@font-face {
+    font-family: 'SUSE';
+    src: url(/public/fonts/SUSE-VariableFont_wght.ttf);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+summary {
+    color: rgb(0, 255, 0);
+    font-family: 'SUSE', sans-serif;
+    font-size: 1rem;
+    line-height: 1.55rem;
+    margin-bottom: 1rem;
+}
+
+summary:hover {
+    color: rgb(0, 137, 0);
+}
+
+details {
+    margin-top: 1.55rem;
+}
+
+details p {
+    font-family: 'SUSE', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    margin-bottom: 1rem;
+    padding-left: 2%;
+}
+
+button, input[type="submit"], input[type="reset"] {
+  text-align: left;
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.turnbutton{
+  text-align: left;
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+  perspective: 1000px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.turnbutton:hover {
+  transform: rotate3d(1, -1, 0.5, 30deg) translateZ(20px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+h3 {
+    font-family: 'SUSE', sans-serif;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+p {
+    font-family: 'SUSE', sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+ul{
+    font-family: 'SUSE', sans-serif;
+    font-size: 1rem;
+    line-height: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem; /* Add some left padding for better readability */
+    list-style-type: none;
 }
 
 body {
@@ -12,37 +98,70 @@ body {
 }
 
 h1 {
-    font-size: 4.5rem;
-    margin-bottom: 1rem;
+    font-family: 'Gulax', sans-serif;
+    font-size: 6.5rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
     white-space: normal;
     overflow-wrap: break-word;
     word-break: break-word;
-    max-width: 45vw;
+    max-width: 100%;
+    box-sizing: border-box;
+    hyphens: none;
+}
+
+#buttontext {
+    font-family: 'SUSE', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    margin-top: 0.25rem;
+    line-height: 1.25rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
     box-sizing: border-box;
     hyphens: auto;
 }
 
 img {
-    max-width: 45vw;
+    max-width: 100%;
     height: auto;
 }
 
-  a:link {
-    color: rgb(0, 255, 0); /* Unvisited link color */
-  }
+a:link {
+  color: rgb(0, 255, 0); /* unvisited link color */
+}
 
-  a:visited {
-    color: rgb(182, 0, 88); /* Visited link color */
-  }
+a:visited {
+  color: rgb(182, 0, 88); /* visited link color */
+}
 
-  a:hover {
-    color: rgb(0, 159, 8); /* Mouse over link color */
-  }
+a:hover {
+  color: rgb(0, 159, 8); /* mouseover link color */
+}
 
-  a:active {
-    color: yellow; /* Selected link color */
-  }
+a:active {
+  color: yellow; /* selected link color */
+}
 
+#nameanim{
+  margin-bottom: 2%;
+  margin-top: 5%;
+}
+
+.back-btn{
+  filter: drop-shadow(10px, 10px, 10px, #000000);
+  font-size: 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.back-btn:hover{
+  color: rgb(0, 255, 0);
+}
+  
 #three-js-container{
     position: fixed;
     inset: 0;
@@ -51,26 +170,139 @@ img {
 
 #content{
     position: relative;
-    left: 50%;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 50%;
     z-index: 1; 
     color: white;
-    font-family: 'Gulax', sans-serif;
     padding: 2rem;
-  /* Allow internal scrolling even though body may be overflow:hidden */
-  max-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    /* Allow internal scrolling even though body may be overflow:hidden */
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+    user-select: none;
+    pointer-events: auto;
 }
 
 #content h3 {
     white-space: normal;
     overflow-wrap: break-word;
     word-break: break-word;
-    max-width: 45vw;
+    max-width: 100%;
     box-sizing: border-box;
     hyphens: auto;
 }
+
+#contact-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+#contact-bar a{
+    font-family: 'SUSE', sans-serif;
+    font-size: 1.15rem;
+    line-height: 1rem;
+    text-decoration: none;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+#rpanrResize {
+  flex-grow: 0;
+  flex-shrink: 0;
+  background: #ffffff;
+  width: 0.2rem;
+  height:4rem;
+  cursor: col-resize;
+  margin: 0 0 0 auto;
+  user-select: none;
+  pointer-events: auto;
+}
+
+#splitzone {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: transparent;
+  align-items: center; /* make children fill the container vertically */
+  pointer-events: none;
+}
+
+#hoverzone {
+  flex-grow: 1;
+  flex-shrink: 0;
+  width: 50%;
+  pointer-events: auto; /* allow mouse events inside the hover area */
+  height: 100vh; /* ensure the hover area fills the viewport vertically */
+}
+
+#project-metainfo {
+  margin-bottom: 0.5rem;
+}
+
+#frontpagegrid {
+    display: grid;
+    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.caption {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    line-height: 1rem;
+    margin-top: 0.2rem;
+}
+
+.imgrow {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 1;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    justify-content: space-evenly;
+    align-items: flex-start; /* align items to the top of the row */
+}
+
+.imgrow > div {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* allow images inside a wrapped div to grow and fill the available space */
+.imgrow > div img {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* or cover if you want cropping */
+}
+
+.imgrow img {
+    flex: 1;
+    min-width: 0;
+}
+
+.tablerow {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    border: #ffffff solid 0.1rem;
+    padding: 0.5rem;
+    justify-content: space-evenly;
+}
+
 
 /* Panels shown/hidden by JS buttons */
 .panel {
@@ -79,10 +311,24 @@ img {
     white-space: normal;
     overflow-wrap: break-word;
     word-break: break-word;
-    max-width: 45vw;
+    max-width: 100%;
     box-sizing: border-box;
     hyphens: auto;
 }
+
+.panel h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+}
+
+.panel h2 {
+      font-family: 'SUSE', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      margin-top: 0.25rem;
+      line-height: 2.25rem;
+}
+
 .panel.active {
     display: block;
 }
